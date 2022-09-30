@@ -17,7 +17,7 @@
         android:layout_width="140dp"
         android:layout_height="80dp"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@drawable/ic_logotipo" />
+        app:srcCompat="@drawable/ic_logochamados" />
 
     <TextView
         android:id="@+id/text_name"

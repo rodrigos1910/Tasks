@@ -13,7 +13,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class PersonRepository(val context: Context) {
+class PersonRepository(val context: Context)  : BaseRepository() {
 
 
     private val remote = RetrofitClient.getService(PersonService::class.java)
@@ -22,7 +22,7 @@ class PersonRepository(val context: Context) {
 
 
     fun login(email: String, password: String, listener: ApiListener<PersonModel>) {
-       val call =  remote.login(email,password)
+        val call =  remote.login(email,password)
         call.enqueue(object : Callback<PersonModel>{
             override fun onResponse(call: Call<PersonModel>, response: Response<PersonModel>) {
 
@@ -43,10 +43,6 @@ class PersonRepository(val context: Context) {
         })
     }
 
-
-    private fun failResponse(str: String): String{
-        return Gson().fromJson(str, String::class.java)
-    }
 
 
 }
