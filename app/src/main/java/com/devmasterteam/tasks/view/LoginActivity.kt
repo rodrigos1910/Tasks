@@ -44,6 +44,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             R.id.button_login ->{
                 handleLogin()
             }
+            R.id.text_register->{
+                handleRegister()
+            }
         }
     }
 
@@ -77,5 +80,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
 
             viewModel.doLogin(email, password)
+    }
+
+
+    fun handleRegister(){
+        startActivity(Intent(applicationContext, RegisterActivity::class.java))
     }
 }

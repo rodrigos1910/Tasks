@@ -2,6 +2,7 @@ package com.devmasterteam.tasks.service.repository
 
 import android.content.ClipDescription
 import android.content.Context
+import android.widget.Toast
 import com.devmasterteam.tasks.R
 import com.devmasterteam.tasks.service.constants.TaskConstants
 import com.devmasterteam.tasks.service.listener.ApiListener
@@ -16,7 +17,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PriorityRepository(val context: Context) : BaseRepository() {
+class PriorityRepository(context: Context) : BaseRepository(context) {
 
 
     //retofit
@@ -25,6 +26,11 @@ class PriorityRepository(val context: Context) : BaseRepository() {
     private val database = TaskDatabase.getDatabase(context.applicationContext).priorityDAO()
 
     fun list( listener: ApiListener<List<PriorityModel>>){
+
+        if (!isConnerctionAvailable()){
+            listener.onFailure(context.getString(R.string.ERROR_INTERNET_CONNECTION))
+            return
+        }
 
         val call =  remote.list()
         call.enqueue(object : Callback<List<PriorityModel>> {
@@ -49,6 +55,7 @@ class PriorityRepository(val context: Context) : BaseRepository() {
     }
 
     fun save(list: List<PriorityModel>) {
+
         database.clear()
         database.save(list)
     }

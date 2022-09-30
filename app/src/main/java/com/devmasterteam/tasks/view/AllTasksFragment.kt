@@ -1,5 +1,7 @@
 package com.devmasterteam.tasks.view
 
+import android.content.Intent
+import android.os.Binder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.devmasterteam.tasks.R
 import com.devmasterteam.tasks.databinding.FragmentAllTasksBinding
+import com.devmasterteam.tasks.service.constants.TaskConstants
 import com.devmasterteam.tasks.service.listener.TaskListener
 import com.devmasterteam.tasks.view.adapter.TaskAdapter
 import com.devmasterteam.tasks.viewmodel.TaskListViewModel
@@ -24,6 +27,7 @@ class AllTasksFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val adapter = TaskAdapter()
+    private var taskFilter = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, b: Bundle?): View {
         viewModel = ViewModelProvider(this).get(TaskListViewModel::class.java)
@@ -33,9 +37,16 @@ class AllTasksFragment : Fragment() {
         binding.recyclerAllTasks.layoutManager = LinearLayoutManager(context)
         binding.recyclerAllTasks.adapter = adapter
 
+        taskFilter = requireArguments().getInt(TaskConstants.BUNDLE.TASKFILTER, 0)
+
+
         val listener = object : TaskListener{
             override fun onListClick(id: Int) {
-
+                val intent = Intent(context,TaskFormActivity::class.java)
+                val bundle = Bundle()
+                bundle.putInt(TaskConstants.BUNDLE.TASKID, id)
+                intent.putExtras(bundle)
+                startActivity(intent)
             }
 
             override fun onDeleteClick(id: Int) {
@@ -43,11 +54,11 @@ class AllTasksFragment : Fragment() {
             }
 
             override fun onCompleteClick(id: Int) {
-
+                viewModel.completeTask(id)
             }
 
             override fun onUndoClick(id: Int) {
-
+                viewModel.undoTask(id)
             }
 
         }
@@ -55,7 +66,7 @@ class AllTasksFragment : Fragment() {
         adapter.attachListener(listener)
 
         //lista as tarefas
-        viewModel.list()
+        viewModel.list(taskFilter)
 
         // Cria os observadores
         observe()
@@ -66,7 +77,7 @@ class AllTasksFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.list()
+        viewModel.list(taskFilter)
     }
 
     override fun onDestroyView() {
@@ -81,6 +92,18 @@ class AllTasksFragment : Fragment() {
         }
 
         viewModel.taskDelete.observe(viewLifecycleOwner){
+            if (!it.status()){
+                Toast.makeText(context, it.message(),Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        viewModel.taskComplete.observe(viewLifecycleOwner){
+            if (!it.status()){
+                Toast.makeText(context, it.message(),Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        viewModel.taskUndo.observe(viewLifecycleOwner){
             if (!it.status()){
                 Toast.makeText(context, it.message(),Toast.LENGTH_SHORT).show()
             }

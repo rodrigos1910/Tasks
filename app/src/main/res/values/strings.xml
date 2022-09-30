@@ -9,6 +9,9 @@
     <string name="task_created">Tarefa criada com sucesso!</string>
     <string name="task_removed">Tarefa removida com sucesso!</string>
 
+
+    <string name="register_created">Cadastro criado com sucesso!</string>
+
     <string name="email">E-mail</string>
     <string name="senha">Senha</string>
     <string name="login">Login</string>
